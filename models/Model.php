@@ -35,3 +35,8 @@ abstract class Model{
         return $objects;
     }
 }    
+
+// might be needed later if i wanna use insert multiple times
+   
+
+//public static function insert
