@@ -1,7 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 require_once ('BaseController.php');
 
 class RegisterController extends BaseController {
@@ -16,6 +13,8 @@ public function handle() {
     $email=($_POST["email"] ?? '');
     $password=($_POST["password"] ?? '');
     $phone=($_POST["phone"] ?? '');
+
+    file_put_contents("log.txt", "POST ARRAY: " . json_encode($_POST) . "\n", FILE_APPEND);
 
 
     if (!$name || !$email || !$password) {

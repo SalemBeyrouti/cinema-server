@@ -6,11 +6,11 @@ class User extends Model
     protected static string $table = "users";
 
     private int $id;
-    private string $name;
-    private string $email;
+    private ?string $name;
+    private ?string $email;
     private string $password;
 
-    private string $phone;
+    private ?string $phone;
     
     private string $created_at;
 
@@ -51,11 +51,11 @@ class User extends Model
     }
 
 
-    public static function findByEmail($mysqli, string $email){
-        $sql = sprintf("Select * from %s Where email = ?", static::$table);
+    public static function findByEmail($mysqli, string $input){
+        $sql = sprintf("Select * from %s Where email = ? OR phone =?", static::$table);
 
         $query = $mysqli->prepare($sql);
-        $query->bind_param("s", $email);
+        $query->bind_param("ss", $input, $input);
         $query->execute();
 
         $data = $query->get_result()->fetch_assoc();

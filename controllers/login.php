@@ -5,11 +5,13 @@ class LoginController extends BaseController {
     public function handle(){ 
         if ($_SERVER["REQUEST_METHOD"] !== "POST") {
             $this->respond("error", "only post requests are allowed.");
+            return;
         }
         $email = $_POST["email"] ?? null;
         $password = $_POST["password"] ?? null;
         if (!$email || !$password) {
-            $this->respond ("error", "Email and passowrd are required");
+            $this->respond ("error", "Email and password are required");
+            return;
         }
         $user = User::findByEmail($this->mysqli, $email);
 
