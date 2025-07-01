@@ -1,17 +1,21 @@
 <?php
 require_once 'BaseController.php';
+require_once '../models/User.php';
 
 class GetUsersController extends BaseController {
-    public function handle() {
+    public function __construct() {
+        parent::__construct();
+
+        if (!$this->isGet()) {
+            $this->respond(405, "only get allowed");
+        }
+
         $users = User::all($this->mysqli);
 
-        $result = array_map(function ($user) {
-            return $user->toArray();
-        }, $users);
+        $result = array_map(fn($user) => $user->toArray(), $users);
 
-        $this->respond("success", $result);
+        $this->respond(200, "Users fetched successfully", $result);
     }
 }
 
-$controller = new GetUsersController();
-$controller->handle();
+new GetUsersController();

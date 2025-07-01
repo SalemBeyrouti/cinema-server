@@ -1,33 +1,34 @@
 <?php
 require_once 'BaseController.php';
+require_once '../models/User.php';
 
 class LoginController extends BaseController {
-    public function handle(){ 
-        if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-            $this->respond("error", "only post requests are allowed.");
-            return;
-        }
-        $email = $_POST["email"] ?? null;
-        $password = $_POST["password"] ?? null;
-        if (!$email || !$password) {
-            $this->respond ("error", "Email and password are required");
-            return;
-        }
-        $user = User::findByEmail($this->mysqli, $email);
+    public function __construct() {
+        parent::__construct();
 
-        if(!$user) {
-            $this->respond("error", "user not found");
+        if (!$this->isPost()) {
+            $this->respond(405, "only post allowed");
         }
 
-        if(!password_verify($password, $user->getPassword())){
-            $this->respond("error", "incorect password.");
+        $input = $this->jsonInput();
+
+        if (!$this->requireFields($input, ["email", "password"])) return;
+
+        $emailOrPhone = $input["email"];
+        $password = $input["password"];
+
+        $user = User::findByEmail($this->mysqli, $emailOrPhone);
+
+        if (!$user) {
+            $this->respond(400, "User not found");
         }
 
-        $this->respond("success", $user->toArray());
+        if (!password_verify($password, $user->getPassword())) {
+            $this->respond(400, "Incorrect password");
+        }
 
+        $this->respond(200, "Login successful", $user->toArray());
     }
 }
 
-
-$controller = new LoginController();
-$controller->handle();
+new LoginController();

@@ -1,27 +1,30 @@
 <?php
-require ("../connection/connection.php");
-require ("../models/Movie.php");
+require_once 'BaseController.php';
+require_once '../models/Movie.php';
 
-$response = [];
-$response ["status"] = 200;
+class GetMoviesController extends BaseController {
+    public function __construct() {
+        parent::__construct();
 
-if (!isset($_GET["id"])){
+        if (!$this->isGet()) {
+            $this->respond(405, "Only GET requests are allowed");
+        }
 
-    $movies = Movie::all( $mysqli); 
-    $response["movies"] = [];
+        if (!isset($_GET["id"])) {
+            $movies = Movie::all($this->mysqli);
+            $result = array_map(fn($movie) => $movie->toArray(), $movies);
+            $this->respond(200, "movies fetched", $result);
+        }
 
-    foreach($movies as $m) {
+        $id = (int)$_GET["id"];
+        $movie = Movie::find($this->mysqli, $id);
 
-        $response["movies"][] = $m->toArray();
+        if (!$movie) {
+            $this->respond(404, "Movie not found");
+        }
 
+        $this->respond(200, "Movie fetched", $movie->toArray());
     }
-    echo json_encode($response);
-    return;
 }
 
-$id = $_GET["id"];
-$movie = Movie::find($mysqli, $id);
-$response["movie"] = $movie->toArray();
-
-echo json_encode($response);
-return;
+new GetMoviesController();

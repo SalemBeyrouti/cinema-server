@@ -1,44 +1,23 @@
 <?php
-ini_set("display_errors", 1);
-ini_set("display_startup_errors", 1);
-error_reporting(E_ALL);
+require_once "BaseController.php";
+require_once "../models/Movie.php";
 
-require ("../models/Movie.php");
-require ("../connection/connection.php");
+class CreateMovieController extends BaseController {
+    public function __construct() {
+        parent::__construct();
 
-$response = [];
-$response["status"] = 200;
+        if (!$this->isPost()) {
+            $this->respond(405, "Only POST allowed");
+        }
 
-if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+        $input = $this->jsonInput();
 
-    $response["status"] = 405;
-    $response["message"] = "cant do that";
-    echo json_encode($response);
-    return;
+        if (!$this->requireFields($input, ["title", "description", "genre", "poster_url", "release_date", "duration"])) return;
 
-}
+        $movie = Movie::insert($this->mysqli, $input);
 
-$input = json_decode(file_get_contents("php://input"), true);
-
-
-$required_fields = ["title", "description", "genre", "duration", "poster_url", "release_date"];
-
-foreach($required_fields as $field) {
-    if (!isset($input[$field])   ||  empty($input[$field])) {
-
-        $response["status"] = 400;
-        $response["message"] = "cant do that";
-        echo json_encode($response);
-        return;
+        $this->respond(200, "Movie created", $movie->toArray());
     }
-
 }
 
-$movie = Movie::insert($mysqli, $input);
-$response["movie"] = $movie->toArray();
-
-echo json_encode($response);
-return;
-
-
-
+new CreateMovieController();

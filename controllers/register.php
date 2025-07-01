@@ -1,50 +1,44 @@
 <?php
-require_once ('BaseController.php');
+require_once 'BaseController.php';
+require_once '../models/User.php';
 
 class RegisterController extends BaseController {
+    public function __construct() {
+        parent::__construct();
 
-public function handle() {
-    if ($_SERVER ["REQUEST_METHOD"] !== "POST") {
-        $this->respond("error", "only post requests are allowed");
-    }
-    file_put_contents("log.txt", "handle started\n", FILE_APPEND);
+        if (!$this->isPost()) {
+            $this->respond(405, "Only POST requests are allowed");
+        }
 
-    $name=($_POST["name"] ?? '');
-    $email=($_POST["email"] ?? '');
-    $password=($_POST["password"] ?? '');
-    $phone=($_POST["phone"] ?? '');
+        $input = $this->jsonInput();
 
-    file_put_contents("log.txt", "POST ARRAY: " . json_encode($_POST) . "\n", FILE_APPEND);
+        if (!$this->requireFields($input, ["name", "email", "password"])) return;
 
+        $name = $input["name"];
+        $email = $input["email"];
+        $password = $input["password"];
+        $phone = $input["phone"] ?? "";
 
-    if (!$name || !$email || !$password) {
-        $this->respond("error", "name, email, and password are required");
+        $existingUser = User::findByEmail($this->mysqli, $email);
+        if ($existingUser) {
+            $this->respond(409, "Email already registered");
+        }
 
-    }
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    $existingUser = User::findByEmail($this->mysqli, $email);
-    if($existingUser) {
-        $this->respond("error", "email already registered");
+        $newUser = User::insert($this->mysqli, [
+            "name" => $name,
+            "email" => $email,
+            "password" => $hashedPassword,
+            "phone" => $phone
+        ]);
 
-    }
-
-    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-
-    $newUser = User::create($this->mysqli, [
-        "name" => $name,
-        "email" => $email,
-        "password" => $hashedPassword,
-        "phone" => $phone
-    ]);
-
-    if ($newUser) {
-        $this->respond("success", $newUser->toArray());
-    } else {
-        $this->respond("error", "user registration failed.");
+        if ($newUser) {
+            $this->respond(201, "User registered", $newUser->toArray());
+        } else {
+            $this->respond(500, "User registration failed");
+        }
     }
 }
-}
 
-$controller = new RegisterController();
-$controller->handle();
+new RegisterController();
