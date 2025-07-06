@@ -8,4 +8,11 @@ return [
 
  "/get_bookings" => ["controller" => "BookingController",     "method" => "getBookings"],
     
+ "/create_showtimes" =>    ["controller" => "ShowtimeController",  "method" => "createShowtime"],
+
+  "/get_showtimes" =>    ["controller" => "ShowtimeController",  "method" => "getShowtimes"],
+
+  "/create_seats" =>    ["controller" => "SeatController",  "method" => "createSeat"],
+
+   "/get_seats" =>    ["controller" => "SeatController",  "method" => "getSeats"],
 ];
