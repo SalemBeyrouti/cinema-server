@@ -4,6 +4,7 @@ abstract class Model{
     protected static string $table;
     protected static string $primary_key = "id";
 
+
     public static function find(mysqli $mysqli, int $id){
         $sql = sprintf("Select * from %s WHERE %s = ?", 
                         static::$table, 
@@ -108,6 +109,34 @@ abstract class Model{
 
         return $result ? new static($result) : null;
 
+    }
+
+     public static function create(mysqli $mysqli, array $data) {
+        $columns = implode(", ", array_keys($data));
+        $placeholders = implode(", ", array_fill(0, count($data), "?"));
+
+        $sql = sprintf("INSERT INTO %s (%s) VALUES (%s)", static::$table, $columns, $placeholders);
+
+        $stmt = $mysqli->prepare($sql);
+        if(!$stmt) return false;
+
+        $values = array_values($data);
+
+        $types = '';
+        foreach ($values as $value) {
+            $types .= is_int($value) ? 'i' : 's';
+        }
+        
+
+        $stmt->bind_param($types, ...$values);
+
+        if(!$stmt->execute()) {
+            return false; 
+        }
+        $id = $mysqli->insert_id;
+        return static::find($mysqli, $id);
+
+        
     }
 
    
