@@ -10,7 +10,7 @@ class MovieController extends BaseController {
 
     public function createMovie() {
         if (!$this->isPost()) {
-            $this->respond(401, "only post");
+            $this->error("only post");
         }
 
         $input = $this->jsonInput();
@@ -21,36 +21,32 @@ class MovieController extends BaseController {
 
         $movie = Movie::create($this->mysqli, $input);
 
-        if(!$movie) {
-            $this->respond(402, "failed to create");
-            return;
-        }
-        $this->respond(201, "movie created", $movie->toArray());
+        $movie 
+            ? $this->success($movie->toArray())
+            : $this->error("failed to create");
        
     }
 
 
     public function getMovies() {
         if (!$this ->isGet()) {
-            $this->respond(400, "only get");
+            $this->error( "only get");
         }
     
 
     if (!isset($_GET['id'])) {
         $movies = Movie::all($this->mysqli);
+
+        return $this->success(MovieService::moviesToArray($movies));
         
-        $movies_array = MovieService::moviesToArray($movies);
-        $this->respond(200, "Movies fetched", $movies_array);
-        return;
+
     }
     $id = $_GET["id"];
     $movie = Movie::find($this->mysqli, $id);
 
-    if(!$movie) {
-        $this->respond(400, "movie not found");
-        return;
-    }
-    $this->respond(200, "movie fetched", $movie->toArray());
+    $movie 
+        ? $this->success($movie->toArray())
+        : $this->error("failed to create");
     }
 
 

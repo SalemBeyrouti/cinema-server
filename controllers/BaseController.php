@@ -1,14 +1,10 @@
 <?php
 require_once(__DIR__ . '/../connection/connection.php');
+require_once(__DIR__ . '/../services/ResponseService.php');
 
 
 abstract class BaseController {
     protected $mysqli;
-    protected $response = [
-        "status" => 200,
-        "message" => "",
-        "data" => null
-    ];
 
     public function __construct() {
         $this->mysqli = $GLOBALS["mysqli"];
@@ -30,19 +26,20 @@ abstract class BaseController {
     protected function requireFields(array $input, array $fields): bool {
         foreach ($fields as $field) {
             if (!isset($input[$field]) || empty($input[$field])) {
-                $this->respond(400, "failed");
+                $this->error("$field is required");
                 return false;
             }
         }
         return true;
     }
 
-    protected function respond(int $status, string $message = "", $data = null): void {
-        $this->response["status"] = $status;
-        $this->response["message"] = $message;
-        $this->response["data"] = $data;
+    protected function success($payload) {
+        echo ResponseService::success_response($payload);
+        exit;
+    }
 
-        echo json_encode($this->response);
+    protected function error($message) {
+        echo ResponseService::error_response($message);
         exit;
     }
 }

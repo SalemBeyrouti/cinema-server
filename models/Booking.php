@@ -8,17 +8,19 @@ class Booking extends Model {
     protected static string $primary_key = "id";
 
     private int $id;
-    private int $userid;
-    private int $seatid;
-    private int $movieid;
-    private string $bookingtime;
+    private int $user_id;
+    private int $showtime_id;
+    private int $seat_id;
+    private string $created_at;
+    private string $updated_at;
 
     public function __construct(array $data) {
         $this->id = $data['id'] ?? 0;
-        $this->userid = $data['user_id'];
-        $this->seatid = $data['seat_id'];
-        $this->movieid = $data['movie_id'];
-        $this->bookingtime = $data['booking_time'];
+        $this->user_id = $data['user_id'];
+        $this->showtime_id = $data['showtime_id'];
+        $this->seat_id = $data['seat_id'];
+        $this->created_at = $data['created_at'];
+        $this->updated_at = $data['updated_at'];
     }
 
     public function getID(): int {
@@ -26,44 +28,52 @@ class Booking extends Model {
     }
 
     public function getUserid(): int {
-        return $this->userid;
+        return $this->user_id;
     }
 
-    public function getSeatid(): int {
-        return $this->seatid;
+    public function getShowtimeId(): int {
+        return $this->showtime_id;
     }
 
-    public function getMovieid(): int {
-        return $this->movieid;
+    public function getSeatId(): int {
+        return $this->seat_id;
     }
 
-    public function getBookingtime(): string {
-        return $this->bookingtime;
+    public function getCreatedAt(): string {
+        return $this->created_at;
     }
 
-    public function setUserid(int $userid): void {
-        $this->userid = $userid;
+    public function getUpdatedAt(): string {
+       return $this->updated_at;
     }
 
-    public function setSeatid(int $seatid): void {
-        $this->seatid = $seatid;
+    public function setUserId(int $user_id): void {
+        $this->user_id = $user_id;
     }
 
-    public function setMovieid(int $movieid): void {
-        $this->movieid = $movieid;
+    public function setShowtimeId(int $showtime_id): void {
+        $this->showtime_id = $showtime_id;
     }
 
-    public function setBookingtime(string $bookingtime): void {
-        $this->bookingtime = $bookingtime;
+    public function setSeatId(int $seat_id): void {
+        $this->seat_id = $seat_id;
+    }
+
+    public function setCreatedAt(string  $created_at): void {
+        $this->created_at = $created_at;
+    }
+    public function setUpdatedAt(string  $updated_at): void {
+        $this->updated_at = $updated_at;
     }
 
     public function toArray(): array {
         return [
             "id" => $this->id,
-            "userid" => $this->userid,
-            "seatid" => $this->seatid,
-            "movieid" => $this->movieid,
-            "bookingtime" => $this->bookingtime
+            "user_id" => $this->user_id,
+            "showtime_id" => $this->showtime_id,
+            "seat_id" => $this->seat_id,
+            "created_at" => $this->created_at,
+            "updated_at" => $this->updated_at
         ];
     }
 }
