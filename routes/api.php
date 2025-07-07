@@ -20,7 +20,11 @@ return [
 
   "/login" =>    ["controller" => "UserController",  "method" => "loginUser"],
 
-    "/users" =>    ["controller" => "UserController",  "method" => "getUsers"],
+    "/get_users" =>    ["controller" => "UserController",  "method" => "getUsers"],
+
+    "/create_snack" =>    ["controller" => "SnackController",  "method" => "createSnack"],
+
+    "/get_snacks" =>    ["controller" => "SnackController",  "method" => "getSnacks"],
 
 
 ];
