@@ -105,9 +105,13 @@ abstract class Model{
         $query->bind_param($type, $value);
 
         $query->execute();
-        $result = $query->get_result()->fetch_assoc();
+        $result = $query->get_result();
+        $objects = [];
 
-        return $result ? new static($result) : null;
+        while ($row = $result->fetch_assoc()){
+            $objects [] = new static($row);
+        }
+        return $objects;
 
     }
 

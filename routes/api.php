@@ -26,5 +26,7 @@ return [
 
     "/get_snacks" =>    ["controller" => "SnackController",  "method" => "getSnacks"],
 
+    "/get_recommendations" =>    ["controller" => "RecommendationController",  "method" => "getRecommendations"],
+
 
 ];
