@@ -14,24 +14,29 @@ class User extends Model
     
     private string $created_at;
 
+    private ?string $updated_at;
+
     public function __construct(array $data)
     {
-        $this->id = $data["id"];
-        $this->name = $data["name"];
-        $this->email = $data["email"];
-        $this->password = $data["password"];
-        $this->phone = $data ["phone"];
-        $this->created_at = $data["created_at"];
+        $this->id = $data["id"] ?? 0;
+        $this->name = $data["name"] ?? null;
+        $this->email = $data["email"] ?? null;
+        $this->password = $data["password"] ?? '';
+        $this->phone = $data ["phone"] ?? null;
+        $this->created_at = $data["created_at"] ?? '';
+        $this->updated_at = $data["updated_at"] ?? '';
+
     }
 
     public function toArray(): array
     {
         return [
-             "id" => $this->id,
+            "id" => $this->id,
             "name" => $this->name,
             "email" => $this->email,
             "phone" => $this->phone,
             "created_at" => $this->created_at,
+            "updated_at" => $this->updated_at
         ];
     }
 

@@ -2,7 +2,6 @@
 
 require(__DIR__ . "/../models/Booking.php");
 require(__DIR__ . "/../connection/connection.php");
-
 require_once(__DIR__ . "/BaseController.php");
 require_once(__DIR__ . '/../services/BookingService.php');
 
@@ -49,10 +48,12 @@ class BookingController extends BaseController {
         $id = $_GET["id"];
         $booking = Booking::find($this->mysqli, $id);
 
-        if(!$booking) {
-            return $this->error("booking not found");
-        }
+        $booking
+            ? $this->success($booking->toArray())
+            : $this->error("failed to find");
 
-        $this->success($booking->toArray());
+       
     }
+
+
 }

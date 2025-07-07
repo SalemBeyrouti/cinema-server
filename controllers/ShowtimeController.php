@@ -43,11 +43,10 @@ class ShowtimeController extends BaseController {
         $id = $_GET["id"];
         $showtime = Showtime::find($this->mysqli, $id);
 
-        if(!$showtime) {
-            return $this->error("booking not found");
-        }
-
-        $this->success($showtime->toArray());
+        $showtime 
+            ? $this->success($showtime->toArray())
+            : $this->error("failed to find");
+    }
     }
 
 

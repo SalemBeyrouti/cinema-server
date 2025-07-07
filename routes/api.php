@@ -15,4 +15,12 @@ return [
   "/create_seats" =>    ["controller" => "SeatController",  "method" => "createSeat"],
 
    "/get_seats" =>    ["controller" => "SeatController",  "method" => "getSeats"],
+
+ "/register" =>    ["controller" => "UserController",  "method" => "registerUser"],
+
+  "/login" =>    ["controller" => "UserController",  "method" => "loginUser"],
+
+    "/users" =>    ["controller" => "UserController",  "method" => "getUsers"],
+
+
 ];

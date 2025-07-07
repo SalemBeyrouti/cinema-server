@@ -48,10 +48,8 @@ class SeatController extends BaseController {
         $id = $_GET["id"];
         $seat = Seat::find($this->mysqli, $id);
 
-        if(!$seat) {
-            return $this->error("seat not found");
-        }
-
-        $this->success($seat->toArray());
+        $seat
+            ? $this->success($seat->toArray())
+            : $this->error("no seat found");
     }
 }
